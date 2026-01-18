@@ -1,9 +1,18 @@
 version: "3.9"
 
 services:
-  tcp-gateway:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.tcp
+  postgres:
+    image: postgres:16
+    container_name: gps_tracking_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
+    ports:
+      - "5432:5432"
     volumes:
-      - .:/app
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

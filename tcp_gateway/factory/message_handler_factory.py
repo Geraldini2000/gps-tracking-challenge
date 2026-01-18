@@ -1,12 +1,13 @@
 from tcp_gateway.handlers.ping_handler import PingHandler
 from tcp_gateway.handlers.location_handler import LocationHandler
 from tcp_gateway.handlers.base import MessageHandler
-from tcp_gateway.repositories.sqlite_location_repository import SqliteLocationRepository
+from tcp_gateway.repositories.postgres_location_repository import PostgresLocationRepository
+
 
 
 class MessageHandlerFactory:
 
-    _repository = SqliteLocationRepository()
+    _repository = PostgresLocationRepository()
 
     _handlers = {
         0x01: PingHandler,

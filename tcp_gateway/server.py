@@ -5,6 +5,9 @@ from tcp_gateway.decoder.hex_decoder import HexDecoder, HexDecoderError
 from tcp_gateway.parser.sft9001_parser import SFT9001Parser, SFT9001ParserError
 from tcp_gateway.factory.message_handler_factory import MessageHandlerFactory
 from tcp_gateway.protocol.ping_ack import build_ping_ack
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
