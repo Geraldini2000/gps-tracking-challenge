@@ -2,6 +2,8 @@ import pytest
 
 from tcp_gateway.factory.message_handler_factory import MessageHandlerFactory
 from tcp_gateway.dto.location_packet import LocationPacket
+from tcp_gateway.repositories.fake_location_repository import FakeLocationRepository
+from tcp_gateway.handlers.location_handler import LocationHandler
 
 
 def test_factory_returns_ping_handler():
@@ -13,7 +15,9 @@ def test_factory_returns_ping_handler():
 
 
 def test_factory_returns_location_handler():
-    handler = MessageHandlerFactory.create(0x02)
+    # Usar repositório fake para não conectar ao banco real nos testes
+    fake_repo = FakeLocationRepository()
+    handler = LocationHandler(fake_repo)
 
     packet = LocationPacket(
         device_id="ABC123",
