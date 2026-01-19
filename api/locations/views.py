@@ -4,6 +4,7 @@ from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
+
 from locations.services import get_last_location
 
 
@@ -52,3 +53,51 @@ class LastLocationView(APIView):
             )
 
         return Response(location, status=status.HTTP_200_OK)
+
+
+from tcp_gateway.adapters.http_input_adapter import (
+    HttpInputAdapter,
+    HttpInputAdapterError,
+)
+
+
+class SimulateHexPacketView(APIView):
+    @extend_schema(
+        summary="Simulate GPS packet ingestion (HEX)",
+        description=(
+            "Accepts a raw hexadecimal GPS packet and processes it using the "
+            "same gateway pipeline as TCP ingestion.\n\n"
+            "**Development and testing purposes only.**"
+        ),
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "payload": {
+                        "type": "string",
+                        "example": (
+                            "50F70A3F73025EFCF950156F017D784000008CA0"
+                            "F8003C013026A1029E72BD73C4"
+                        ),
+                    }
+                },
+                "required": ["payload"],
+            }
+        },
+        responses={201: dict},
+        tags=["Simulation"],
+    )
+    def post(self, request):
+        payload = request.data.get("payload")
+
+        adapter = HttpInputAdapter()
+
+        try:
+            result = adapter.process(payload)
+        except HttpInputAdapterError as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(result, status=status.HTTP_201_CREATED)
