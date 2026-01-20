@@ -1,9 +1,21 @@
 version: "3.9"
 
 services:
-  tcp-gateway:
+  app:
     build:
       context: .
-      dockerfile: docker/Dockerfile.tcp
+      dockerfile: Dockerfile
+    container_name: gps_tracking_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+      - "9000:9000"
+    environment:
+      - PYTHONUNBUFFERED=1
     volumes:
       - .:/app
+    command: sh /app/scripts/start_services.sh
+
+volumes:
+  postgres_data:
